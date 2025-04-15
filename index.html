@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Game Job Creator</title>
+  <title>Job Creator</title>
   <style>
    :root {
     --primary-color: #ff1e1e;
@@ -602,7 +602,7 @@
 </head>
 <body>
   <div class="container">
-    <h1>Game Job Creator Tool</h1>
+    <h1>MD Job Creator Tool</h1>
     
     <div>
       <input type="file" webkitdirectory directory multiple accept="image/png" id="fileInput">
@@ -617,7 +617,7 @@
     <div class="option-block">
       <div class="checkbox-container">
         <input type="checkbox" id="cateringCheckbox">
-        <label for="cateringCheckbox">Catering Service Enabled</label>
+        <label for="cateringCheckbox">Catering Enabled</label>
       </div>
       
       <div id="cateringOptions" class="section-content">
@@ -737,8 +737,9 @@
         </div>
         
         <h3>Crafting Recipes</h3>
-        <button class="primary-btn" id="addRecipeBtn">Add New Recipe</button>
+        
         <div id="craftingRecipesContainer"></div>
+        <button class="primary-btn" id="addRecipeBtn">Add New Recipe</button>
       </div>
     </div>
     <div class="option-block">
@@ -889,38 +890,40 @@
         </div>
         
         <!-- Tills Form -->
+        <!-- Tills Form -->
         <div id="tillsForm" class="location-type-form" style="display:none;">
           <h4>Till Location</h4>
+          
+          <!-- Add this new field for commission -->
+          <div class="form-group">
+            <label for="tillsCommission">Commission Rate:</label>
+            <input type="number" id="tillsCommission" step="0.01" min="0" max="1" placeholder="e.g. 0.1 for 10%">
+          </div>
           
           <div class="form-group">
             <label for="tillsLoc">Location (vector3):</label>
             <input type="text" id="tillsLoc" placeholder="e.g. vector3(380.22, -827.26, 29.4)" value="vector3(0.0, 0.0, 0.0)">
           </div>
-          
           <div class="form-row">
             <div class="form-group half">
               <label for="tillsL">Length (l):</label>
               <input type="number" id="tillsL" step="0.1" value="0.5">
             </div>
-            
             <div class="form-group half">
               <label for="tillsW">Width (w):</label>
               <input type="number" id="tillsW" step="0.1" value="0.7">
             </div>
           </div>
-          
           <div class="form-row">
             <div class="form-group half">
               <label for="tillsLwr">Lower (lwr):</label>
               <input type="number" id="tillsLwr" step="0.01" value="0.25">
             </div>
-            
             <div class="form-group half">
               <label for="tillsUpr">Upper (upr):</label>
               <input type="number" id="tillsUpr" step="0.01" value="0.75">
             </div>
           </div>
-          
           <div class="form-group">
             <label for="tillsR">Rotation (r):</label>
             <input type="number" id="tillsR" value="180">
@@ -1786,13 +1789,16 @@ function addLocation(locationType) {
       `;
       break;
       
-    case "Tills":
+      case "Tills":
       const tillLoc = document.getElementById("tillsLoc").value;
       const tillL = document.getElementById("tillsL").value;
       const tillW = document.getElementById("tillsW").value;
       const tillLwr = document.getElementById("tillsLwr").value;
       const tillUpr = document.getElementById("tillsUpr").value;
       const tillR = document.getElementById("tillsR").value;
+      
+      // Get the commission value
+      const tillCommission = document.getElementById("tillsCommission").value || 0;
       
       contentDiv.innerHTML = `
         <div class="location-data" data-type="${locationType}">
@@ -1802,6 +1808,7 @@ function addLocation(locationType) {
           <p><strong>Lower (lwr):</strong> <span class="editable" data-field="lwr">${tillLwr}</span></p>
           <p><strong>Upper (upr):</strong> <span class="editable" data-field="upr">${tillUpr}</span></p>
           <p><strong>Rotation (r):</strong> <span class="editable" data-field="r">${tillR}</span></p>
+          <p><strong>Commission:</strong> <span class="editable" data-field="commission">${tillCommission}</span></p>
           <p><strong>Job:</strong> ${jobName}</p>
         </div>
       `;
@@ -1935,15 +1942,16 @@ function collectLocations() {
         break;
         
       case "Tills":
-        locations.Tills.push({
-          loc: getField('loc'),
-          l: parseFloat(getField('l')),
-          w: parseFloat(getField('w')),
-          lwr: parseFloat(getField('lwr')),
-          upr: parseFloat(getField('upr')),
-          r: parseFloat(getField('r')),
-          job: jobName
-        });
+      locations.Tills.push({
+        loc: getField('loc'),
+        l: parseFloat(getField('l')),
+        w: parseFloat(getField('w')),
+        lwr: parseFloat(getField('lwr')),
+        upr: parseFloat(getField('upr')),
+        r: parseFloat(getField('r')),
+        commission: parseFloat(getField('commission')) || 0, // Add this line
+        job: jobName
+      });
         break;
         
       case "Trays":
@@ -2427,7 +2435,7 @@ function downloadAllInputs() {
     if (locationsData.Tills.length > 0) {
       luaOutput += `        Tills = {\n`;
       locationsData.Tills.forEach((item, index) => {
-        luaOutput += `            {loc = ${item.loc}, l = ${item.l}, w = ${item.w}, lwr = ${item.lwr}, upr = ${item.upr}, r = ${item.r}, job = '${item.job}'}`;
+        luaOutput += `            {loc = ${item.loc}, l = ${item.l}, w = ${item.w}, lwr = ${item.lwr}, upr = ${item.upr}, r = ${item.r}, commission = ${item.commission}, job = '${item.job}'}`;
         if (index < locationsData.Tills.length - 1) {
           luaOutput += ",\n";
         } else {
