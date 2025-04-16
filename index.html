@@ -784,7 +784,14 @@
         <!-- Crafter Form -->
         <div id="crafterForm" class="location-type-form" style="display:none;">
           <h4>Crafter Location</h4>
-          
+          <div class="checkbox-container">
+            <input type="checkbox" id="crafterPropCheck" onchange="togglePropInput('crafterPropCheck', 'crafterPropContainer')">
+            <label for="crafterPropCheck">Spawn A Prop?</label>
+          </div>
+          <div id="crafterPropContainer" class="form-group" style="display:none;">
+            <label for="crafterProp">Prop:</label>
+            <input type="text" id="crafterProp" placeholder="e.g. prop_crafting_table">
+          </div>
           <div class="form-group">
             <label for="crafterType">Type:</label>
             <input type="text" id="crafterType" placeholder="e.g. joints, oil">
@@ -838,7 +845,14 @@
         <!-- Stores Form -->
         <div id="storesForm" class="location-type-form" style="display:none;">
           <h4>Store Location</h4>
-          
+          <div class="checkbox-container">
+            <input type="checkbox" id="storesPropCheck" onchange="togglePropInput('storesPropCheck', 'storesPropContainer')">
+            <label for="storesPropCheck">Spawn A Prop?</label>
+          </div>
+          <div id="storesPropContainer" class="form-group" style="display:none;">
+            <label for="storesProp">Prop:</label>
+            <input type="text" id="storesProp" placeholder="e.g. prop_store_table">
+          </div>
           <div class="form-group">
             <label for="storesType">Type:</label>
             <input type="text" id="storesType" placeholder="e.g. ingredients" value="ingredients">
@@ -893,7 +907,14 @@
         <!-- Tills Form -->
         <div id="tillsForm" class="location-type-form" style="display:none;">
           <h4>Till Location</h4>
-          
+          <div class="checkbox-container">
+            <input type="checkbox" id="tillPropCheck" onchange="togglePropInput('tillPropCheck', 'tillPropContainer')">
+            <label for="tillPropCheck">Spawn A Prop?</label>
+          </div>
+          <div id="tillPropContainer" class="form-group" style="display:none;">
+            <label for="tillProp">Prop:</label>
+            <input type="text" id="tillProp" placeholder="e.g. prop_crafting_table">
+          </div>
           <!-- Add this new field for commission -->
           <div class="form-group">
             <label for="tillsCommission">Commission Rate:</label>
@@ -1756,50 +1777,64 @@ function addLocation(locationType) {
   // Build different forms based on location type
   switch(locationType) {
     case "Crafter":
-    case "Stores":
-      // For both Crafter and Stores, we need similar fields
-      const isStores = locationType === "Stores";
-      const typeField = isStores ? "StoreData" : "CraftData";
-      
-      // Get type value
-      const typeValue = document.getElementById(`${locationType.toLowerCase()}Type`).value;
-      const targetLabel = document.getElementById(`${locationType.toLowerCase()}TargetLabel`).value;
-      const menuLabel = document.getElementById(`${locationType.toLowerCase()}MenuLabel`).value;
-      const loc = document.getElementById(`${locationType.toLowerCase()}Loc`).value;
-      const l = document.getElementById(`${locationType.toLowerCase()}L`).value;
-      const w = document.getElementById(`${locationType.toLowerCase()}W`).value;
-      const lwr = document.getElementById(`${locationType.toLowerCase()}Lwr`).value;
-      const upr = document.getElementById(`${locationType.toLowerCase()}Upr`).value; 
-      const r = document.getElementById(`${locationType.toLowerCase()}R`).value;
-      
-      // Template string for this location
+      let crafterPropHtml = "";
+      if (document.getElementById("crafterPropCheck").checked) {
+        const crafterPropValue = document.getElementById("crafterProp").value;
+        crafterPropHtml = `<p><strong>Prop:</strong> <span class="editable" data-field="prop">${crafterPropValue}</span></p>`;
+      }
       contentDiv.innerHTML = `
-        <div class="location-data" data-type="${locationType}">
-          <p><strong>${typeField} Type:</strong> <span class="editable" data-field="type">${typeValue}</span></p>
-          <p><strong>Target Label:</strong> <span class="editable" data-field="targetLabel">${targetLabel}</span></p>
-          <p><strong>Menu Label:</strong> <span class="editable" data-field="menuLabel">${menuLabel}</span></p>
-          <p><strong>Location:</strong> <span class="editable" data-field="loc">${loc}</span></p>
-          <p><strong>Length (l):</strong> <span class="editable" data-field="l">${l}</span></p>
-          <p><strong>Width (w):</strong> <span class="editable" data-field="w">${w}</span></p>
-          <p><strong>Lower (lwr):</strong> <span class="editable" data-field="lwr">${lwr}</span></p>
-          <p><strong>Upper (upr):</strong> <span class="editable" data-field="upr">${upr}</span></p>
-          <p><strong>Rotation (r):</strong> <span class="editable" data-field="r">${r}</span></p>
+        <div class="location-data" data-type="${locationType}" data-prop-enabled="${document.getElementById("crafterPropCheck").checked}">
+          <p><strong>CraftData Type:</strong> <span class="editable" data-field="type">${document.getElementById("crafterType").value}</span></p>
+          <p><strong>Target Label:</strong> <span class="editable" data-field="targetLabel">${document.getElementById("crafterTargetLabel").value}</span></p>
+          <p><strong>Menu Label:</strong> <span class="editable" data-field="menuLabel">${document.getElementById("crafterMenuLabel").value}</span></p>
+          ${crafterPropHtml}
+          <p><strong>Location:</strong> <span class="editable" data-field="loc">${document.getElementById("crafterLoc").value}</span></p>
+          <p><strong>Length (l):</strong> <span class="editable" data-field="l">${document.getElementById("crafterL").value}</span></p>
+          <p><strong>Width (w):</strong> <span class="editable" data-field="w">${document.getElementById("crafterW").value}</span></p>
+          <p><strong>Lower (lwr):</strong> <span class="editable" data-field="lwr">${document.getElementById("crafterLwr").value}</span></p>
+          <p><strong>Upper (upr):</strong> <span class="editable" data-field="upr">${document.getElementById("crafterUpr").value}</span></p>
+          <p><strong>Rotation (r):</strong> <span class="editable" data-field="r">${document.getElementById("crafterR").value}</span></p>
+          <p><strong>Job:</strong> ${jobName}</p>
+        </div>
+      `;
+      break;
+
+    case "Stores":
+      let storesPropHtml = "";
+      if (document.getElementById("storesPropCheck").checked) {
+        const storesPropValue = document.getElementById("storesProp").value;
+        storesPropHtml = `<p><strong>Prop:</strong> <span class="editable" data-field="prop">${storesPropValue}</span></p>`;
+      }
+      contentDiv.innerHTML = `
+        <div class="location-data" data-type="${locationType}" data-prop-enabled="${document.getElementById("storesPropCheck").checked}">
+          <p><strong>StoreData Type:</strong> <span class="editable" data-field="type">${document.getElementById("storesType").value}</span></p>
+          <p><strong>Target Label:</strong> <span class="editable" data-field="targetLabel">${document.getElementById("storesTargetLabel").value}</span></p>
+          <p><strong>Menu Label:</strong> <span class="editable" data-field="menuLabel">${document.getElementById("storesMenuLabel").value}</span></p>
+          ${storesPropHtml}
+          <p><strong>Location:</strong> <span class="editable" data-field="loc">${document.getElementById("storesLoc").value}</span></p>
+          <p><strong>Length (l):</strong> <span class="editable" data-field="l">${document.getElementById("storesL").value}</span></p>
+          <p><strong>Width (w):</strong> <span class="editable" data-field="w">${document.getElementById("storesW").value}</span></p>
+          <p><strong>Lower (lwr):</strong> <span class="editable" data-field="lwr">${document.getElementById("storesLwr").value}</span></p>
+          <p><strong>Upper (upr):</strong> <span class="editable" data-field="upr">${document.getElementById("storesUpr").value}</span></p>
+          <p><strong>Rotation (r):</strong> <span class="editable" data-field="r">${document.getElementById("storesR").value}</span></p>
           <p><strong>Job:</strong> ${jobName}</p>
         </div>
       `;
       break;
       
-      case "Tills":
+    case "Tills":
       const tillLoc = document.getElementById("tillsLoc").value;
       const tillL = document.getElementById("tillsL").value;
       const tillW = document.getElementById("tillsW").value;
       const tillLwr = document.getElementById("tillsLwr").value;
       const tillUpr = document.getElementById("tillsUpr").value;
       const tillR = document.getElementById("tillsR").value;
-      
-      // Get the commission value
-      const tillCommission = document.getElementById("tillsCommission").value || 0;
-      
+      let tillsPropHtml = "";
+      const commission = document.getElementById('tillsCommission').value;
+      if (document.getElementById("tillPropCheck").checked) {
+        const storesPropValue = document.getElementById("tillProp").value;
+        tillsPropHtml = `<p><strong>Prop:</strong> <span class="editable" data-field="prop">${storesPropValue}</span></p>`;
+      }
       contentDiv.innerHTML = `
         <div class="location-data" data-type="${locationType}">
           <p><strong>Location:</strong> <span class="editable" data-field="loc">${tillLoc}</span></p>
@@ -1808,7 +1843,8 @@ function addLocation(locationType) {
           <p><strong>Lower (lwr):</strong> <span class="editable" data-field="lwr">${tillLwr}</span></p>
           <p><strong>Upper (upr):</strong> <span class="editable" data-field="upr">${tillUpr}</span></p>
           <p><strong>Rotation (r):</strong> <span class="editable" data-field="r">${tillR}</span></p>
-          <p><strong>Commission:</strong> <span class="editable" data-field="commission">${tillCommission}</span></p>
+          <p><strong>Commission: </strong> <span class="editable" data-field="commission">${commission}</span></p>
+          ${tillsPropHtml}
           <p><strong>Job:</strong> ${jobName}</p>
         </div>
       `;
@@ -1908,11 +1944,12 @@ function collectLocations() {
     
     switch(typeLabel) {
       case "Crafter":
-        locations.Crafter.push({
+      locations.Crafter.push({
           CraftData: {
             type: getField('type'),
             targetLabel: getField('targetLabel'),
-            menuLabel: getField('menuLabel')
+            menuLabel: getField('menuLabel'),
+            prop: locationData.getAttribute('data-prop-enabled') === 'true' ? getField('prop') : null
           },
           loc: getField('loc'),
           l: parseFloat(getField('l')),
@@ -1923,13 +1960,14 @@ function collectLocations() {
           job: jobName
         });
         break;
-        
+
       case "Stores":
         locations.Stores.push({
           StoreData: {
             type: getField('type'),
             targetLabel: getField('targetLabel'),
-            menuLabel: getField('menuLabel')
+            menuLabel: getField('menuLabel'),
+            prop: locationData.getAttribute('data-prop-enabled') === 'true' ? getField('prop') : null
           },
           loc: getField('loc'),
           l: parseFloat(getField('l')),
@@ -1941,17 +1979,19 @@ function collectLocations() {
         });
         break;
         
-      case "Tills":
-      locations.Tills.push({
-        loc: getField('loc'),
-        l: parseFloat(getField('l')),
-        w: parseFloat(getField('w')),
-        lwr: parseFloat(getField('lwr')),
-        upr: parseFloat(getField('upr')),
-        r: parseFloat(getField('r')),
-        commission: parseFloat(getField('commission')) || 0, // Add this line
-        job: jobName
-      });
+        case "Tills":
+        const tillData = {
+          loc: getField('loc'),
+          l: parseFloat(getField('l')),
+          w: parseFloat(getField('w')),
+          lwr: parseFloat(getField('lwr')),
+          upr: parseFloat(getField('upr')),
+          r: parseFloat(getField('r')),
+          commission: getField('commission'),
+          prop: document.getElementById("tillPropCheck").checked ? getField('prop') : null,
+          job: jobName
+        };
+        locations.Tills.push(tillData);
         break;
         
       case "Trays":
@@ -2402,16 +2442,20 @@ function downloadAllInputs() {
     luaOutput += `    locations = {\n`;
     
     // Crafters
+    // Crafters
     if (locationsData.Crafter.length > 0) {
       luaOutput += `        Crafter = {\n`;
       locationsData.Crafter.forEach((item, index) => {
-        luaOutput += `            {CraftData = {type = '${item.CraftData.type}', targetLabel = '${item.CraftData.targetLabel}', menuLabel = '${item.CraftData.menuLabel}'},\n`;
+        luaOutput += `            {CraftData = {type = '${item.CraftData.type}', targetLabel = '${item.CraftData.targetLabel}', menuLabel = '${item.CraftData.menuLabel}'`;
+        if (item.CraftData.prop) {
+          luaOutput += `, prop = '${item.CraftData.prop}'`; // Add prop if it exists
+        }
+        luaOutput += `},\n`;
         luaOutput += `                loc = ${item.loc}, l = ${item.l}, w = ${item.w}, lwr = ${item.lwr}, upr = ${item.upr}, r = ${item.r}, job = '${item.job}'}`;
         if (index < locationsData.Crafter.length - 1) {
-          luaOutput += ",\n";
-        } else {
-          luaOutput += "\n";
+          luaOutput += ",";
         }
+        luaOutput += "\n";
       });
       luaOutput += `        },\n`;
     }
@@ -2420,13 +2464,16 @@ function downloadAllInputs() {
     if (locationsData.Stores.length > 0) {
       luaOutput += `        Stores = {\n`;
       locationsData.Stores.forEach((item, index) => {
-        luaOutput += `            {StoreData = {type = '${item.StoreData.type}', targetLabel = '${item.StoreData.targetLabel}', menuLabel = '${item.StoreData.menuLabel}'},\n`;
+        luaOutput += `            {StoreData = {type = '${item.StoreData.type}', targetLabel = '${item.StoreData.targetLabel}', menuLabel = '${item.StoreData.menuLabel}'`;
+        if (item.StoreData.prop) {
+          luaOutput += `, prop = '${item.StoreData.prop}'`; // Add prop if it exists
+        }
+        luaOutput += `},\n`;
         luaOutput += `                loc = ${item.loc}, l = ${item.l}, w = ${item.w}, lwr = ${item.lwr}, upr = ${item.upr}, r = ${item.r}, job = '${item.job}'}`;
         if (index < locationsData.Stores.length - 1) {
-          luaOutput += ",\n";
-        } else {
-          luaOutput += "\n";
+          luaOutput += ",";
         }
+        luaOutput += "\n";
       });
       luaOutput += `        },\n`;
     }
@@ -2435,12 +2482,15 @@ function downloadAllInputs() {
     if (locationsData.Tills.length > 0) {
       luaOutput += `        Tills = {\n`;
       locationsData.Tills.forEach((item, index) => {
-        luaOutput += `            {loc = ${item.loc}, l = ${item.l}, w = ${item.w}, lwr = ${item.lwr}, upr = ${item.upr}, r = ${item.r}, commission = ${item.commission}, job = '${item.job}'}`;
-        if (index < locationsData.Tills.length - 1) {
-          luaOutput += ",\n";
-        } else {
-          luaOutput += "\n";
+        luaOutput += `            {loc = ${item.loc}, l = ${item.l}, w = ${item.w}, lwr = ${item.lwr}, upr = ${item.upr}, r = ${item.r}, commission = ${item.commission}`;
+        if (item.prop) {
+          luaOutput += `, prop = '${item.prop}'`; // Add prop if it exists
         }
+        luaOutput += `, job = '${item.job}'}`;
+        if (index < locationsData.Tills.length - 1) {
+          luaOutput += ",";
+        }
+        luaOutput += "\n";
       });
       luaOutput += `        },\n`;
     }
@@ -2449,13 +2499,15 @@ function downloadAllInputs() {
     if (locationsData.Trays.length > 0) {
       luaOutput += `        trays = {\n`;
       locationsData.Trays.forEach((item, index) => {
-        let propStr = item.prop ? `prop = '${item.prop}', ` : '';
-        luaOutput += `            {label = '${item.label}', ${propStr}loc = ${item.loc}, l = ${item.l}, w = ${item.w}, lwr = ${item.lwr}, upr = ${item.upr}, r = ${item.r}, slots = ${item.slots}, weight = ${item.weight}}`;
-        if (index < locationsData.Trays.length - 1) {
-          luaOutput += ",\n";
-        } else {
-          luaOutput += "\n";
+        luaOutput += `            {label = '${item.label}'`;
+        if (item.prop) {
+          luaOutput += `, prop = '${item.prop}'`; // Add prop if it exists
         }
+        luaOutput += `, loc = ${item.loc}, l = ${item.l}, w = ${item.w}, lwr = ${item.lwr}, upr = ${item.upr}, r = ${item.r}, slots = ${item.slots}, weight = ${item.weight}, job = '${item.job}'}`;
+        if (index < locationsData.Trays.length - 1) {
+          luaOutput += ",";
+        }
+        luaOutput += "\n";
       });
       luaOutput += `        },\n`;
     }
@@ -2464,13 +2516,15 @@ function downloadAllInputs() {
     if (locationsData.Stash.length > 0) {
       luaOutput += `        stash = {\n`;
       locationsData.Stash.forEach((item, index) => {
-        let propStr = item.prop ? `prop = '${item.prop}', ` : '';
-        luaOutput += `            {label = '${item.label}', ${propStr}loc = ${item.loc}, l = ${item.l}, w = ${item.w}, lwr = ${item.lwr}, upr = ${item.upr}, r = ${item.r}, slots = ${item.slots}, weight = ${item.weight}, job = '${item.job}'}`;
-        if (index < locationsData.Stash.length - 1) {
-          luaOutput += ",\n";
-        } else {
-          luaOutput += "\n";
+        luaOutput += `            {label = '${item.label}'`;
+        if (item.prop) {
+          luaOutput += `, prop = '${item.prop}'`; // Add prop if it exists
         }
+        luaOutput += `, loc = ${item.loc}, l = ${item.l}, w = ${item.w}, lwr = ${item.lwr}, upr = ${item.upr}, r = ${item.r}, slots = ${item.slots}, weight = ${item.weight}, job = '${item.job}'}`;
+        if (index < locationsData.Stash.length - 1) {
+          luaOutput += ",";
+        }
+        luaOutput += "\n";
       });
       luaOutput += `        }\n`;
     }
@@ -2502,7 +2556,12 @@ function downloadAllInputs() {
   downloadZip();
  
 }
-
+function formatVector(loc) {
+  const x = parseFloat(loc.x).toFixed(2);
+  const y = parseFloat(loc.y).toFixed(2);
+  const z = parseFloat(loc.z).toFixed(2);
+  return `vector3(${x}, ${y}, ${z})`;
+}
 function downloadFile(type) {
             let fileContent;
             let filename;
