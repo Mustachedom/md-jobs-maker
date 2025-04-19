@@ -613,7 +613,44 @@
       <input type="text" id="jobName" placeholder="Enter job name" autocomplete="off">
       <span>← Job Name</span>
     </div>
-
+    <div class="option-block">
+      <div class="checkbox-container">
+        <input type="checkbox" id="jobRanksCheckbox">
+        <label for="jobRanksCheckbox">Make your job and ranks code</label>
+      </div>
+      <div id="jobRanksOptions" class="section-content">
+        <div class="item-config">
+          <h3>Job Configuration</h3>
+          <div class="field-group">
+            <div>
+              <label for="jobLabel">Label</label>
+              <input type="text" id="jobLabel" placeholder="e.g. Police">
+            </div>
+            <div>
+              <label for="jobType">Type</label>
+              <input id="jobType" type="text" id="jobType" placeholder="leo/ems/restaurant">
+            </div>
+            <div>
+              <label for="defaultPay">Default Pay</label>
+              <select id="defaultPay" >
+                <option value="true">True</option>
+                <option value="false">False</option>
+              </select>
+            </div>
+            <div>
+              <label for="defaultDuty">Default Duty</label>
+              <select id="defaultDuty">
+                <option value="true">True</option>
+                <option value="false">False</option>
+              </select>
+            </div>
+          </div>
+          <h3>Grades</h3>
+          <div id="gradesContainer"></div>
+          <button class="primary-btn" id="addGradeBtn">Add Grade</button>
+        </div>
+      </div>
+    </div>
     <div class="option-block">
       <div class="checkbox-container">
         <input type="checkbox" id="cateringCheckbox">
@@ -1144,7 +1181,13 @@
       document.getElementById('locationCheckbox').addEventListener('change', function() {
         toggleSection('locationOptions', this.checked);
       });
+      document.getElementById('jobRanksCheckbox').addEventListener('change', function() {
+        toggleSection('jobRanksOptions', this.checked);
+      });
 
+      document.getElementById('addGradeBtn').addEventListener('click', function() {
+        addGradeInput();
+      });
       document.getElementById('locationTypeSelect').addEventListener('change', function() {
   const selectedType = this.value;
   
@@ -1191,7 +1234,7 @@ document.getElementById('addConsumableBtn').addEventListener('click', function()
       }
     }
     
-    function formatFilename(filename) {
+function formatFilename(filename) {
       let baseName = filename.replace(/\.[^/.]+$/, "");
       let formattedLabel = baseName.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
       let formattedText = `${baseName} = { name = '${baseName}', label = '${formattedLabel}', weight = 100, type = 'item', image = '${filename}', unique = false, useable = true, shouldClose = true, description = "" },`;
@@ -1205,7 +1248,7 @@ document.getElementById('addConsumableBtn').addEventListener('click', function()
       return baseName;
     }
     
-    function handleFileUpload(event) {
+function handleFileUpload(event) {
       let files = event.target.files;
       if (!files || files.length === 0) return;
       
@@ -1232,7 +1275,7 @@ document.getElementById('addConsumableBtn').addEventListener('click', function()
       }
     }
     
-    function generateCateringItemInputs(filenames) {
+function generateCateringItemInputs(filenames) {
       const container = document.getElementById("cateringItemsContainer");
       container.innerHTML = "";
       const headerRow = document.createElement("div");
@@ -1291,7 +1334,7 @@ document.getElementById('addConsumableBtn').addEventListener('click', function()
       });
     }
     
-    function generateClosedShopInputs(filenames) {
+function generateClosedShopInputs(filenames) {
       const container = document.getElementById("closedShopsContainer");
       container.innerHTML = "";
       const headerRow = document.createElement("div");
@@ -1332,7 +1375,7 @@ document.getElementById('addConsumableBtn').addEventListener('click', function()
       });
     }
 
-    function addNewRecipe() {
+function addNewRecipe() {
   const container = document.getElementById("craftingRecipesContainer");
   
   const recipeDiv = document.createElement("div");
@@ -1460,7 +1503,8 @@ recipeHeader.appendChild(recipeTitle);
   addItemSelector(takeItemsDiv, true);
   addItemSelector(giveItemsDiv, false);
 }
-    function addItemSelector(container, isTake) {
+
+function addItemSelector(container, isTake) {
       const itemDiv = document.createElement("div");
       itemDiv.classList.add("item-selector");
       
@@ -1500,7 +1544,7 @@ recipeHeader.appendChild(recipeTitle);
       container.appendChild(itemDiv);
     }
     
-    function collectCraftingRecipes() {
+function collectCraftingRecipes() {
   const recipesByTable = {};
   const recipeDivs = document.getElementById("craftingRecipesContainer").querySelectorAll(".crafting-recipe");
   
@@ -1554,18 +1598,19 @@ recipeHeader.appendChild(recipeTitle);
   
   return recipesByTable;
 }
+
 function togglePropInput(checkboxId, propInputId) {
   const checkbox = document.getElementById(checkboxId);
   const propInput = document.getElementById(propInputId);
   propInput.style.display = checkbox.checked ? 'block' : 'none';
 }
 
-// Also add this fixed version for the trays section
 function toggleDropInput(checkboxId, containerID) {
   const checkbox = document.getElementById(checkboxId);
   const container = document.getElementById(containerID);
   container.style.display = checkbox.checked ? 'block' : 'none';
 }
+
 function addNewStore() {
   const container = document.getElementById("storesContainer");
   
@@ -1711,7 +1756,6 @@ function addStoreItem(container) {
   container.appendChild(row);
 }
 
-// Function to collect stores data
 function collectStores() {
   const stores = {};
   const storeDivs = document.getElementById("storesContainer").querySelectorAll(".store-section");
@@ -1744,6 +1788,7 @@ function collectStores() {
   
   return stores;
 }
+
 function addLocation(locationType) {
   // Get job name from the top of the form
   const jobName = document.getElementById("jobName").value || "my_job";
@@ -1912,14 +1957,12 @@ function addLocation(locationType) {
   });
 }
 
-// Toggle prop input field based on checkbox
 function togglePropInput(checkboxId, propInputId) {
   const checkbox = document.getElementById(checkboxId);
   const propInput = document.getElementById(propInputId);
   propInput.style.display = checkbox.checked ? 'block' : 'none';
 }
 
-// Function to collect all locations data
 function collectLocations() {
   const locations = {
     Crafter: [],
@@ -2177,6 +2220,7 @@ function addNewConsumable() {
 
   container.appendChild(consumableDiv);
 }
+
 function addEffectSelector(container) {
   const effectDiv = document.createElement("div");
   effectDiv.classList.add("item-selector");
@@ -2211,6 +2255,7 @@ function addEffectSelector(container) {
   effectDiv.appendChild(removeBtn);
   container.appendChild(effectDiv);
 }
+
 function collectConsumables() {
   const consumables = {};
   const consumableDivs = document.getElementById("consumablesContainer").querySelectorAll(".crafting-recipe");
@@ -2556,12 +2601,14 @@ function downloadAllInputs() {
   downloadZip();
  
 }
+
 function formatVector(loc) {
   const x = parseFloat(loc.x).toFixed(2);
   const y = parseFloat(loc.y).toFixed(2);
   const z = parseFloat(loc.z).toFixed(2);
   return `vector3(${x}, ${y}, ${z})`;
 }
+
 function downloadFile(type) {
             let fileContent;
             let filename;
@@ -2582,11 +2629,11 @@ function downloadFile(type) {
             document.body.removeChild(link);
         }
 
-        function downloadZip() {
+function downloadZip() {
             const jobName = document.getElementById("jobName").value || "my_job";
             const zip = new JSZip();
             const inputFolder = zip.folder(jobName); // Create the input folder
-
+            const jobFiles = downloadJobs(); // Get the job files
             // Create img folder inside the input folder
             const imgFolder = inputFolder.folder("img");
 
@@ -2598,6 +2645,7 @@ function downloadFile(type) {
             // Add qb.md and ox.md to the input folder (not inside img folder)
             inputFolder.file("qb.md", "```lua\n" + formattedItems + "\n```");
             inputFolder.file("ox.md", "```lua\n" + oxItems + "\n```");
+            inputFolder.file("jobData.md", jobFiles); // Add the job data file to the input folder
             inputFolder.file(`${jobName}.lua`, generatedLuaContent);
             // Generate the ZIP and prompt download
             zip.generateAsync({ type: "blob" }).then(function(content) {
@@ -2610,6 +2658,118 @@ function downloadFile(type) {
             });
         }
 
+function addGradeInput() {
+  const container = document.getElementById("gradesContainer");
+  const gradeDiv = document.createElement("div");
+  gradeDiv.classList.add("grade-item", "fade-in");
+
+  const header = document.createElement("div");
+  header.classList.add("recipe-header");
+  const title = document.createElement("h4");
+  title.textContent = "Grade";
+  const deleteBtn = document.createElement("button");
+  deleteBtn.classList.add("delete-recipe-btn");
+  deleteBtn.textContent = "×";
+  deleteBtn.onclick = () => gradeDiv.remove();
+  header.appendChild(title);
+  header.appendChild(deleteBtn);
+  gradeDiv.appendChild(header);
+
+  const fieldGroup = document.createElement("div");
+  fieldGroup.classList.add("field-group");
+
+  // Grade Level
+  const levelDiv = document.createElement("div");
+  const levelLabel = document.createElement("label");
+  levelLabel.textContent = "Level";
+  const levelInput = document.createElement("input");
+  levelInput.type = "number";
+  levelInput.min = "0";
+  levelInput.placeholder = "e.g. 0";
+  levelInput.classList.add("grade-level");
+  levelDiv.appendChild(levelLabel);
+  levelDiv.appendChild(levelInput);
+  fieldGroup.appendChild(levelDiv);
+
+  // Grade Name
+  const nameDiv = document.createElement("div");
+  const nameLabel = document.createElement("label");
+  nameLabel.textContent = "Name";
+  const nameInput = document.createElement("input");
+  nameInput.type = "text";
+  nameInput.placeholder = "e.g. Recruit";
+  nameInput.classList.add("grade-name");
+  nameDiv.appendChild(nameLabel);
+  nameDiv.appendChild(nameInput);
+  fieldGroup.appendChild(nameDiv);
+
+  // Payment
+  const payDiv = document.createElement("div");
+  const payLabel = document.createElement("label");
+  payLabel.textContent = "Payment";
+  const payInput = document.createElement("input");
+  payInput.type = "number";
+  payInput.placeholder = "e.g. 50";
+  payInput.classList.add("grade-payment");
+  payDiv.appendChild(payLabel);
+  payDiv.appendChild(payInput);
+  fieldGroup.appendChild(payDiv);
+
+  // Is Boss
+  const bossDiv = document.createElement("div");
+  const bossLabel = document.createElement("label");
+  bossLabel.textContent = "Is Boss";
+  const bossSelect = document.createElement("select");
+  bossSelect.classList.add("grade-isboss");
+  const bossTrueOption = document.createElement("option");
+  bossTrueOption.value = "true";
+  bossTrueOption.textContent = "True";
+  const bossFalseOption = document.createElement("option");
+  bossFalseOption.value = "false";
+  bossFalseOption.textContent = "False";
+  bossSelect.appendChild(bossTrueOption);
+  bossSelect.appendChild(bossFalseOption);
+  bossDiv.appendChild(bossLabel);
+  bossDiv.appendChild(bossSelect);
+  fieldGroup.appendChild(bossDiv);
+
+  gradeDiv.appendChild(fieldGroup);
+  container.appendChild(gradeDiv);
+}
+function collectJobRanks() {
+  if (!document.getElementById("jobRanksCheckbox").checked) return null;
+
+  const label = document.getElementById("jobLabel").value || "police";
+  const type = document.getElementById("jobType").value || "leo";
+  const defaultPay = document.getElementById("defaultPay").value || 50;
+  const defaultDuty = document.getElementById("defaultDuty").value === "true";
+
+  const grades = {};
+  const gradeItems = document.querySelectorAll('.grade-item');
+  gradeItems.forEach(item => {
+    const level = item.querySelector(".grade-level").value;
+    const name = item.querySelector(".grade-name").value;
+    const payment = item.querySelector(".grade-payment").value;
+    const isBoss = item.querySelector(".grade-isboss").value === "true";
+    if (level && name && payment) {
+      grades[level] = { name, payment: parseInt(payment) };
+      if (isBoss) {
+        grades[level].isboss = true;
+      }
+    }
+  });
+
+  if (Object.keys(grades).length > 0) {
+    return {
+      label,
+      type,
+      defaultPay: parseInt(defaultPay),
+      defaultDuty,
+      grades
+    };
+  }
+  return null;
+}
 
 function showNotification(message, type = 'success') {
       const notification = document.getElementById('statusNotification');
@@ -2622,6 +2782,86 @@ function showNotification(message, type = 'success') {
         notification.classList.remove('show');
       }, 3000);
     }
+    function downloadJobs() {
+  const jobName = document.getElementById("jobName").value || "my_job";
+  const cateringEnabled = document.getElementById("cateringCheckbox").checked;
+  const closedEnabled = document.getElementById("closedCheckbox").checked;
+  const craftingEnabled = document.getElementById("craftingCheckbox").checked;
+  const storeEnabled = document.getElementById("storeCheckbox").checked;
+  const locationEnabled = document.getElementById("locationCheckbox").checked;
+  const consumableEnabled = document.getElementById("consumableCheckbox").checked;
+
+  const jobRanksData = collectJobRanks();
+
+  let luaQBCore = `-- QBCORE\n`;
+  let luaQBox = `-- QBOX\n`;
+  let sqlInserts = `-- SQL Insert Statements\n`;
+
+  if (jobRanksData) {
+    // QBCore Format
+    luaQBCore += `${jobName} = {\n`;
+    luaQBCore += `    label = '${jobRanksData.label}',\n`;
+    luaQBCore += `    type = '${jobRanksData.type}',\n`;
+    luaQBCore += `    defaultDuty = ${jobRanksData.defaultDuty},\n`;
+    luaQBCore += `    offDutyPay = ${jobRanksData.offDutyPay},\n`;
+    luaQBCore += `    grades = {\n`;
+    Object.entries(jobRanksData.grades).forEach(([level, data], index) => {
+      luaQBCore += `        ['${level}'] = {\n`;
+      luaQBCore += `            name = '${data.name}',\n`;
+      luaQBCore += `            payment = ${data.payment}`;
+      if (data.isboss) {
+        luaQBCore += `,\n            isboss = true,\n            bankAuth = true`;
+      }
+      luaQBCore += `\n        }`;
+      if (index < Object.keys(jobRanksData.grades).length - 1) {
+        luaQBCore += ",";
+      }
+      luaQBCore += "\n";
+    });
+    luaQBCore += `    },\n`;
+    luaQBCore += `},\n\n`;
+
+    // QBox Format
+    luaQBox += `['${jobName}'] = {\n`;
+    luaQBox += `    label = '${jobRanksData.label}',\n`;
+    luaQBox += `    type = '${jobRanksData.type}',\n`;
+    luaQBox += `    defaultDuty = ${jobRanksData.defaultDuty},\n`;
+    luaQBox += `    offDutyPay = ${jobRanksData.offDutyPay},\n`;
+    luaQBox += `    grades = {\n`;
+    Object.entries(jobRanksData.grades).forEach(([level, data], index) => {
+      luaQBox += `        [${level}] = {\n`;
+      luaQBox += `            name = '${data.name}',\n`;
+      luaQBox += `            payment = ${data.payment}`;
+      if (data.isboss) {
+        luaQBox += `,\n            isboss = true,\n            bankAuth = true`;
+      }
+      luaQBox += `\n        }`;
+      if (index < Object.keys(jobRanksData.grades).length - 1) {
+        luaQBox += ",";
+      }
+      luaQBox += "\n";
+    });
+    luaQBox += `    },\n`;
+    luaQBox += `},\n\n`;
+
+    // SQL Format
+    sqlInserts += `INSERT INTO \`jobs\` (name, label) VALUES\n`;
+    sqlInserts += `  ('${jobName}', '${jobRanksData.label}');\n\n`;
+    sqlInserts += `INSERT INTO \`job_grades\` (job_name, grade, name, label, salary, skin_male, skin_female) VALUES\n`;
+    Object.entries(jobRanksData.grades).forEach(([level, data], index) => {
+      sqlInserts += `  ('${jobName}', ${level}, '${data.name.toLowerCase()}', '${data.name}', ${data.payment}, '{}', '{}')`;
+      if (index < Object.keys(jobRanksData.grades).length - 1) {
+        sqlInserts += ",";
+      }
+      sqlInserts += "\n";
+    });
+    sqlInserts += ";\n";
+  }
+
+  // Combine all formats into one final output
+  return luaQBCore + luaQBox + sqlInserts;
+}
+
   </script>
 </body>
 </html>
