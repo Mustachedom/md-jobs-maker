@@ -2727,6 +2727,7 @@ function addGradeInput() {
   const bossFalseOption = document.createElement("option");
   bossFalseOption.value = "false";
   bossFalseOption.textContent = "False";
+  bossFalseOption.selected = true; // Set this option as selected by default
   bossSelect.appendChild(bossTrueOption);
   bossSelect.appendChild(bossFalseOption);
   bossDiv.appendChild(bossLabel);
@@ -2750,7 +2751,7 @@ function collectJobRanks() {
     const level = item.querySelector(".grade-level").value;
     const name = item.querySelector(".grade-name").value;
     const payment = item.querySelector(".grade-payment").value;
-    const isBoss = item.querySelector(".grade-isboss").value === "true";
+    const isBoss = item.querySelector(".grade-isboss").value === "false";
     if (level && name && payment) {
       grades[level] = { name, payment: parseInt(payment) };
       if (isBoss) {
